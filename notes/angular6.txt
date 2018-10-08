@@ -1,0 +1,218 @@
+Property binding: It works only one way ie, from component to the DOM. Any changes made in DOM are not reflected in the component.
+
+no scope concept as in angularjs, we can directly modify component.
+<html>
+	<div [class.active] = "isActive"></div>
+	<div [style.background = "isActive ? 'blue' : 'white'"]></div>
+</html>
+
+
+export class dash{
+	isActive = true;
+}
+
+---------------------eventHandling: ------------------------------------------------------------------------
+
+eventHandling: 
+
+	<html>
+		<button (click)="onSave()"></button>
+	</html>
+	
+	export class dash{
+		onSave(){
+			console.log("Clicked!");
+		}
+	}
+	
+--------------------eventFiltering: ---------------------------------------------------------------------------
+
+	template: `<input (keyup)="onKeyUp($event)" />
+			<input (keyup.enter) = "onKeyUp2()" /> 
+			<input (keyup.enter) = "onKeyUp3($event)" /> 
+			<input #email (keyup.enter) = "onKeyUp4(email.value)" >
+			<input [value]="email" (keyup.enter) = "email = $event.target.value; onKeyUp5(email.value)" >
+			<input [(ngModel)]="email"  (keyup.enter) = "onKeyUp6()"
+		`
+	
+
+	onKeyUp($event) {
+		if($event.keyCode === 13) 
+			console.log("ENTER was pressed!");
+	}
+	
+	onKeyUp2(){
+		console.log("Entering")
+	}
+	
+	onKeyUp3($event){
+		console.log($event.target.value);
+	}
+	
+	-----------------------Template Variable---------------------
+	onKeyUp4(email){
+		console.log(email);
+	}
+	
+	--------------------- BAD WAY TO ADD 2-WAY-BINDING------------------------
+	email;
+	onKeyUp5(){
+		console.log(this.email);
+	}
+	--------------------- BETTER WAY TO ADD 2-WAY-BINDING------------------------
+	app.module.ts
+	
+	import {FormsModule} from '@angular/core';
+	.
+	.
+	@NgModule({
+		.
+		imports : [
+			FormsModule
+		]
+	})
+	
+	
+	
+	email;
+	onKeyUp6(){
+		console.log(this.email);
+	}
+	
+-----------------------------FILTER PIPES-------------------------------------------------
+	
+	npm package: @angular/common  NgModule: CommonModule
+	
+	{{title | uppercase }}
+	lowercase
+	number
+	number: '2.2-1'
+	currency: 'AUD': true: '3.2-2'
+	date: 'shortDate'
+	
+---------------------------------CUSTOM PIPES-------------------------------------------------
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
