@@ -1,8 +1,8 @@
 DISPLAY:
 ----------
 Inline:  Can't set top and bottom margins/padding or even height/width.
-Inline-block allows to set a width and height on the element but display: inline doesnot allow such thing.
-Display: inline-block does not add a line-break after the element, so the element can sit next to other elements but Display: block adds a line-break.
+Inline-block allows to set a width and height on the element. inline-block does not add a line-break after the element, so the element can sit next to other elements but Display
+Display: : block adds a line-break.allows to set a width and height on the element 
 
 Display: none completely strips an element from the page. This means that if you apply display: none to an element, it won’t appear on your website and there will be no visible evidence of it ever having existed — meaning that the surrounding elements will treat the element as empty space and adapt accordingly.
 
