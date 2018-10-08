@@ -658,6 +658,40 @@ public class Java7ResourceManagement {
 	}
 }
 	
+------------------------------------------------------ASPECT ORIENTED PROGRAMMING-----------------------------------------------------------------
+There are five types of advice in spring AOP.
+
+1. Before advice: Advice that executes before a join point, but which does not have the ability to prevent execution flow proceeding to the join point (unless it throws an exception).
+
+2. After returning advice: Advice to be executed after a join point completes normally: for example, if a method returns without throwing an exception.
+
+3. After throwing advice: Advice to be executed if a method exits by throwing an exception.
+
+4. After advice: Advice to be executed regardless of the means by which a join point exits (normal or exceptional return).
+
+5. Around advice: Advice that surrounds a join point such as a method invocation. This is the most powerful kind of advice. Around advice can perform custom behavior before and after the method invocation. It is also responsible for choosing whether to proceed to the join point or to shortcut the advised method execution by returning its own return value or throwing an exception.
+
+
+
+@Before("execution(* EmployeeManager.getEmployeeById(..))")         //point-cut expression
+    public void logBeforeV1(JoinPoint joinPoint)
+    {
+	
+	
+@Pointcut("execution(* com.luv2code.aopdemo.dao.*.*(..))")
+	public void forDaoPackage() {}
+
+@Before("com.luv2code.aopdemo.aspect.LuvAopExpressions.forDaoPackage()")
+	public void performApiAnalytics() {
+		System.out.println("\n========>>> 0. Performing API analytics <<<=============");
+	}
+	
+@AfterThrowing(pointcut = "execution(* com.luv2code.aopdemo.dao.AccountDAO.findAccounts(..))", throwing = "theExc")
+	public void afterThrowingFindAccountsAdvice(JoinPoint thejoinPoint, Throwable theExc) {
+	
+	
+@AfterReturning(pointcut = "execution(* com.luv2code.aopdemo.dao.AccountDAO.findAccounts(..))", returning = "result")
+	public void afterRunningFindAccountsService(JoinPoint theJoinPoint, List<Account> result) {
 	
 	
 	
