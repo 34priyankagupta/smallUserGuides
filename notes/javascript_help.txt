@@ -123,6 +123,8 @@ condition ? (answer if true) || (answer if false)
 The pop() method removes the last element of an array, and returns that element.
 To remove the first element of an array, use the shift() method.
 
+push() adds element in array
+
 
 
 
