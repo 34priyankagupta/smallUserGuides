@@ -1,0 +1,115 @@
+
+
+-----------------------------------------SPRING--------------------------------------------------------------------
+
+Spring is one of the most widely used Java EE framework. Spring framework core concepts are “Dependency Injection” and “Aspect Oriented Programming”.
+
+----------------------------------------Dependency Injection--------------------------------------------------------
+
+Dependency Injection design pattern allows us to remove the hard-coded dependencies and make our application loosely coupled, extendable and maintainable
+Inversion of Control (IoC) is the mechanism to achieve loose-coupling between Objects dependencies. Any normal java class that is initialized by Spring IoC container is called Spring Bean. We use Spring ApplicationContext to get the Spring Bean instance.
+
+
+The objects that form the backbone of your application and that are managed by the Spring IoC container are called beans.
+
+@Qualifier :  The qualifier annotation helps disambiguate bean references when Spring would otherwise not be able to do so
+
+For a bean with the default singleton scope, Spring first checks if a cached instance of the bean already exists and only creates a new one if it doesn’t. If we’re using the prototype scope, the container returns a new bean instance for each method call.
+
+SO if you are using same bean id for same id, it will throw error
+
+<bean id="appContext1" class="com.context.AppContext">
+     <constructor-arg value="abc" />
+<bean/>
+<bean id="appContext2" class="com.context.AppContext">
+     <constructor-arg value="ABC" />
+<bean/>
+
+@Autowired
+@Qualifier("appContext1")
+AppContext appContext;
+
+@Autowired
+@Qualifier("appContext2")
+AppContext appContext;
+
+
+------
+
+@Component: It is a basic auto component scan annotation, it indicates annotated class is a auto scan component.
+
+@Repository: You need to use this annotation with in the persistance layer, which acts like database repository.
+
+@Service: It indicates annotated class is a Service component in the business layer.
+
+@Controller: Annotated class indicates that it is a controller components, and mainly used at presentation layer.
+
+-----------
+
+BeanFactory / ApplicationContext
+----------------------------------
+
+BeanFactory and ApplicationContext both are Java interfaces and ApplicationContext extends BeanFactory
+
+BeanFactory is also called basic IOC and ApplicationContext is called Advanced IOC. Although BeanFactory and ApplicationContext both are used to get the beans from IOC container by using method getBean(String beanName). But they have some significant differences in their implementation which are described as below :
+
+1. BeanFactory uses lazy initialization approach whereas ApplicationContext uses eager initialization approach.
+
+2. BeanFactory creates a singleton bean only when it is requested from it but ApplicationContext creates all singleton beans at the time of its own initialization.
+
+3. Annotation based dependency Injection is not supported by BeanFactory whereas ApplicationContext supports using annotation @PreDestroy, @Autowired. 
+	ApplicationContext: Support internationalization while beanfactory don't.
+	
+---------------------------------------What is ContextLoaderListener?------------------------------------------------------
+
+ContextLoaderListener is the listener class used to load root context and define spring bean configurations that will be visible to all other contexts. It’s configured in web.xml file
+
+------------------------------------------------DispatcherServlet ----------------------------------------------------
+
+DispatcherServlet is the Front Controller in the Spring MVC application that takes care of all the incoming requests and delegate it to different controller handler methods. Configure DispatcherServlet in the web.xml file to handle requests through spring container.
+
+
+--------------------------------How can we use Spring to create Restful Web Service returning JSON response?----------------------------
+
+Adding Jackson JSON dependencies
+
+---------------------------------------------------Spring MVC Interceptor----------------------------------------------
+
+Spring MVC Interceptors are like Servlet Filters and allow us to intercept client request and process it. We can intercept client request at three places – preHandle, postHandle and afterCompletion.
+
+-------------------------------------------------Transaction Management in Spring-----------------------------------------
+
+We use annotate a method with @Transactional annotation for Declarative transaction management. 
+
+<bean id="transactionManager"
+    class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource" />
+</bean>
+
+-------------------------------------------------Spring Security---------------------------------------------------
+
+through the use of annotations such as @EnableWebSecurity. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

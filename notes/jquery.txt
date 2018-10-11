@@ -1,0 +1,63 @@
+
+--------------------------Replace href------------------------------------------
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('a[href^="http://"]').each(function(){ 
+            var oldUrl = $(this).attr("href"); // Get current url
+            var newUrl = oldUrl.replace("http://", "https://"); // Create new url
+            $(this).attr("href", newUrl); // Set herf value
+        });
+    });
+</script>
+
+-------------------------DOM MANIPULATION-----------------------------------------
+
+.addClass()
+.attr()
+.hasClass()
+.html()
+.prop()
+.removeAttr()
+.removeClass()
+.removeProp()
+.toggleClass()
+.val()
+
+$( "p" ).removeClass( "myClass noClass" ).addClass( "yourClass" );
+$( elem ).attr( "checked" )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

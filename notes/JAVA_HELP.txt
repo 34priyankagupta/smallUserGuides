@@ -1,4 +1,5 @@
 ConcurrentModificationException occurs when we try to modify list/set during iteration process. This is what called ConcurrentModificationException
+Fail-fast (if list is structurally modified at any time after the iterator is created, in any way except through the iterator’s own remove or add methods, the iterator will throw a ConcurrentModificationException
 
 1.  ArrayList is better than traditional array as it array size is  fixed but its dynamically increases as required. It implements List interface.
 	ArrayList is non-synchronized which means multiple threads can work on ArrayList at the same time.
@@ -28,33 +29,34 @@ ConcurrentModificationException occurs when we try to modify list/set during ite
 	hmap.put(12, "Chaitanya");
 	
 5. TreeMap class implements Map interface similar to HashMap class. The main difference between them is that HashMap is an unordered collection while TreeMap is
-	sorted in the ascending order of its keys. TreeMap is unsynchronized collection class which means it is not suitable for thread-safe operations. Does not allow null keys or null value.
+	sorted in the ascending order of its keys. TreeMap is unsynchronized collection class which means it is not suitable for thread-safe operations. Does not allow null keys, but it can have null value.
 	TreeMap<Integer, String> tmap = new TreeMap<Integer, String>();
 	tmap.put(1, "Data1");
+	tmap.put(2, null);
 	if you want to turn non-synchrous to synchronous, u need Map m = Collections.synchronizedMap(new LinkedHashMap(...));
 	
 6. LinkedHashMap is a Hash table and linked list implementation of the Map interface, with predictable iteration order. LinkedHashMap maintains the insertion
-	order. it allows null value and key
+	order. it allows null value and key. also its same as hashmap but insertion order differs.
 	LinkedHashMap<Integer, String> lhmap = new LinkedHashMap<Integer, String>();
 	lhmap.put(22, "Abey");
 	
 7. HashSet Class implements the Set interface, backed by a hash table. This class permits the null element. This class is not synchronized. HashSet allows null
-	values. HashSet doesn’t allow duplicates. If you try to add a duplicate element in HashSet, the old value would be overwrittenHashSet doesn’t maintain any
+	values. HashSet doesn’t allow duplicates. If you try to add a duplicate element in HashSet, the old value would be overwritten HashSet doesn’t maintain any
 	order, the elements would be returned in any random order.
 	HashSet<String> hset = new HashSet<String>();
 	
-8. TreeSet is similar to HashSet except that it sorts the elements in the ascending order while HashSet doesn’t maintain any order. TreeSet allows null element
-	but like HashSet it doesn’t allow. 
+8. TreeSet is similar to HashSet except that it sorts the elements in the ascending order while HashSet doesn’t maintain any order. TreeSet does not allow null value.
 	TreeSet<String> tset = new TreeSet<String>();
 	tset.add("ABC");
 	
 9. LinkedHashSet maintains the insertion order. Elements gets sorted in the same sequence in which they have been added to the Set. LinkedHashSet is also an
-	implementation of Set interface
+	implementation of Set interface. It allows null values.
 	LinkedHashSet<String> lhset = new LinkedHashSet<String>();
 	lhset.add("Z");
 	
 10.  Hashtable This class implements a hash table, which maps keys to values. Any non-null object can be used as a key or as a value. Hashtable is similar to
 	HashMap except it is synchronized. So it is thread safe so if a thread works on this hashtable than another thread has to wait until its work is done.
+	if you try to add another key with same name, it will update the existing value of that key. Fail-fast does not happen here.
 	Hashtable<String, String> hashtable = new Hashtable<String, String>();
 	hashtable.put("Key1","Chaitanya");
 	
@@ -101,12 +103,18 @@ ConcurrentModificationException occurs when we try to modify list/set during ite
 	
 ---------------------------------------------------SERIALIZATION-------------------------------------------------------------------------
 
-Serialization is a mechanism to convert an object into stream of bytes so that it can be written into a file, transported through a network or stored into database. De-serialization is just a vice versa
+Serialization is a mechanism to convert an object into stream of bytes so that it can be written into a file, transported through a network or stored into database. De-serialization is just a vice versa. The object should implement Serializable interface and we can use java.io.ObjectOutputStream to write object to file or to any OutputStream object. 
 
 ----------------------------------------------------STATIC-------------------------------------------------------------------------------
 
-Static method in base class which will be hidden in subclass, and Non-static method which will be overridden in derived class.
+Static method in base class which will be hidden in subclass, and Non-static method which will be overridden in derived class.  A static method can access only static variables of class and invoke only static methods of the class.
 Static methods can not override.
+We can use static keyword with a class level variable. A static variable is a class variable and doesn’t belong to Object/instance of the class.
+
+---------------------------------------------------STATIC CLASS-----------------------------------------------------------------------------
+We can’t declare a top-level class as static however an inner class can be declared as static. If inner class is declared as static, it’s called static nested class.
+
+GIVEN an example below
 
 ---------------------------------------------------ERROR N EXCEPTION----------------------------------------------------------------------
 
@@ -219,6 +227,8 @@ main: It is the method name. This is the entry point method from which the JVM c
 
 
 --------------------WRAPPER, AUTOBOXING-------------------------------------
+
+Java wrapper classes are the Object representation of eight primitive types in java. All the wrapper classes in java are immutable and final. Java 5 autoboxing and unboxing allows easy conversion between primitive types and their corresponding wrapper classes.
 
 Java is statically typed and also a strongly typed language where each variable and expression type is already known at compile time.
 Generally we use primitive types but sometime we need to use object, and to do this JAVA provides wrapper class to us.
@@ -337,301 +347,11 @@ There are two ways to create a String object:
 	
 	
 	
-	
-	
-	
-	
-	
 ----------------------------------------TESTING------------------------------------------------------------------
 
 A Functional Test makes sure the application allows the user to perform an action. A Unit Test makes sure the code behaves how the programmer expects.
 "Functional test" is rather end-to-end test.
-	
-	
-	
--------------------------SPRING------------------------------------------------
-The objects that form the backbone of your application and that are managed by the Spring IoC container are called beans.
-
-@Qualifier :  The qualifier annotation helps disambiguate bean references when Spring would otherwise not be able to do so
-
-For a bean with the default singleton scope, Spring first checks if a cached instance of the bean already exists and only creates a new one if it doesn’t. If we’re using the prototype scope, the container returns a new bean instance for each method call.
-
-SO if you are using same bean id for same id, it will throw error
-
-<bean id="appContext1" class="com.context.AppContext">
-     <constructor-arg value="abc" />
-<bean/>
-<bean id="appContext2" class="com.context.AppContext">
-     <constructor-arg value="ABC" />
-<bean/>
-
-@Autowired
-@Qualifier("appContext1")
-AppContext appContext;
-
-@Autowired
-@Qualifier("appContext2")
-AppContext appContext;
-
-
-------
-
-@Component: It is a basic auto component scan annotation, it indicates annotated class is a auto scan component.
-
-@Repository: You need to use this annotation with in the persistance layer, which acts like database repository.
-
-@Service: It indicates annotated class is a Service component in the business layer.
-
-@Controller: Annotated class indicates that it is a controller components, and mainly used at presentation layer.
-
------------
-
-BeanFactory / ApplicationContext
-----------------------------------
-
-BeanFactory and ApplicationContext both are Java interfaces and ApplicationContext extends BeanFactory
-
-BeanFactory is also called basic IOC and ApplicationContext is called Advanced IOC. Although BeanFactory and ApplicationContext both are used to get the beans from IOC container by using method getBean(String beanName). But they have some significant differences in their implementation which are described as below :
-
-1. BeanFactory uses lazy initialization approach whereas ApplicationContext uses eager initialization approach.
-
-2. BeanFactory creates a singleton bean only when it is requested from it but ApplicationContext creates all singleton beans at the time of its own initialization.
-
-3. Annotation based dependency Injection is not supported by BeanFactory whereas ApplicationContext supports using annotation @PreDestroy, @Autowired. 
-	ApplicationContext: Support internationalization while beanfactory don't.
-	
-	
------------------------------------------------------------------HIBERNATE-------------------------------------------------------------------------
-
-----------------------------------------------------------------NAMED QUERY------------------------------------------------------------------
-
-Hibernate Named Query is global, means once defined it can be used throughout the application.
-
-
-Hibernate Configuration XML
-hibernate.cfg.xml
-
-<?xml version="1.0" encoding="UTF-8"?>
-  <!DOCTYPE hibernate-configuration SYSTEM "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
-<hibernate-configuration>
-	<session-factory>
-		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.password">pankaj123</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost/TestDB</property>
-		<property name="hibernate.connection.username">pankaj</property>
-		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
-
-		<property name="hibernate.current_session_context_class">thread</property>
-		<property name="hibernate.show_sql">true</property>
-
-		<mapping class="com.journaldev.hibernate.model.Employee" />
-		<mapping class="com.journaldev.hibernate.model.Address" />
-		<mapping resource="named-queries.hbm.xml" />
-	</session-factory>
-</hibernate-configuration>
-
-
-Hibernate Named Query XML
-We have a hibernate mapping file, that contains only HQL named queries and Native SQL named queries.
--------------------------------
-named-queries.hbm.xml
-
-<?xml version="1.0"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
-	"http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
-	
-<hibernate-mapping>
-	<query name="HQL_GET_ALL_EMPLOYEE">from Employee</query>
-
-	<query name="HQL_GET_EMPLOYEE_BY_ID">
-		<![CDATA[from Employee where emp_id = :id]]>
-	</query>
-
-	<query name="HQL_GET_EMPLOYEE_BY_SALARY">
-		<![CDATA[from Employee where emp_salary > :salary]]>
-	</query>
-	
-	<sql-query name="SQL_GET_ALL_EMPLOYEE">
-		<![CDATA[select emp_id, emp_name, emp_salary from Employee]]>
-	</sql-query>
-	
-	<sql-query name="SQL_GET_ALL_EMP_ADDRESS">
-		<![CDATA[select {e.*}, {a.*} from Employee e join Address a ON e.emp_id=a.emp_id]]>
-		<return alias="e" class="com.journaldev.hibernate.model.Employee" />
-		<return-join alias="a" property="e.address"></return-join>
-	</sql-query>
-	
-	<return alias="e" class="com.journaldev.hibernate.model.Employee" />
-		<return-join alias="a" property="e.address"></return-join>
-	</sql-query>
-</hibernate-mapping>
-
--------------------------
-	public static void main(String[] args) {
-
-		// Prep work
-		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-		Session session = sessionFactory.getCurrentSession();
-		Transaction tx = session.beginTransaction();
-
-		//HQL Named Query Example
-		Query query = session.getNamedQuery("HQL_GET_ALL_EMPLOYEE");
-		List<Employee> empList = query.list();
-		for (Employee emp : empList) {
-			System.out.println("List of Employees::" + emp.getId() + ","
-					+ emp.getAddress().getCity());
-		}
-		tx.commit();
-
-		// closing hibernate resources
-		sessionFactory.close();
 		
-		}
-------------------------
-
-@Entity
-@Table(name = "ADDRESS")
-@NamedQueries({ @NamedQuery(name = "@HQL_GET_ALL_ADDRESS", 
-			query = "from Address") })
-@NamedNativeQueries({ @NamedNativeQuery(name = "@SQL_GET_ALL_ADDRESS", 
-			query = "select emp_id, address_line1, city, zipcode from Address") })
-public class Address {............}
-
-
-
-various objects - transient, persistent, detached, remove---
------------------------------------------------------------
-
-1.	Newly created POJO object will be in the transient state. Transient object doesn’t represent any row of the database i.e. not associated with any session
-	object. It’s plain simple java object.
-	
-2.	Persistent object represent one row of the database and always associated with some unique hibernate session. Changes to persistent objects are tracked by
-	hibernate and are saved into database when commit call happen.
-	
-3.	Detached objects are those who were once persistent in past, and now they are no longer persistent. To persist changes done in detached objects, you must
-	reattach them to hibernate session.
-	
-4.	Removed objects are persistent objects that have been passed to the session’s remove() method and soon will be deleted as soon as changes held in the
-	session will be committed to database.
-
-
-Caching in hibernate
----------------------
-	Caching functionality is designed to reduce the amount of necessary database access.
-	Hibernate provides 3 types of caching. 
-	1. Session Cache : The session cache caches objects within the current session. It is enabled by default in Hibernate. When we query an entity first time, it is retrieved from database and stored in first level cache associated with hibernate session
-	2. Second Level Cache : 
-	
-
-	
-FROM Clause
-------------
-String hql = "FROM Employee";
-Query query = session.createQuery(hql);
-List results = query.list();
-	
-
-AS Clause
-------------
-String hql = "FROM Employee AS E";
-Query query = session.createQuery(hql);
-List results = query.list();
-	
-	
-SELECT Clause
---------------
-String hql = "SELECT E.firstName FROM Employee E";
-Query query = session.createQuery(hql);
-List results = query.list();	
-	
-	
-WHERE Clause
----------------
-String hql = "FROM Employee E WHERE E.id = 10";
-Query query = session.createQuery(hql);
-List results = query.list();
-	
-ORDER BY Clause
-----------------
-String hql = "FROM Employee E WHERE E.id > 10 ORDER BY E.salary DESC";
-Query query = session.createQuery(hql);
-List results = query.list();
-	
-
-GROUP BY Clause
----------------
-String hql = "SELECT SUM(E.salary), E.firtName FROM Employee E " +
-             "GROUP BY E.firstName";
-Query query = session.createQuery(hql);
-List results = query.list();
-	
-	
-Using Named Parameters
-----------------------
-String hql = "FROM Employee E WHERE E.id = :employee_id";
-Query query = session.createQuery(hql);
-query.setParameter("employee_id",10);
-List results = query.list();
-	
-	
-UPDATE Clause
---------------
-String hql = "UPDATE Employee set salary = :salary "  + "WHERE id = :employee_id";
-Query query = session.createQuery(hql);
-query.setParameter("salary", 1000);
-query.setParameter("employee_id", 10);
-int result = query.executeUpdate();
-System.out.println("Rows affected: " + result);
-	
-	
-	
-DELETE Clause
---------------
-String hql = "DELETE FROM Employee "  + "WHERE id = :employee_id";
-Query query = session.createQuery(hql);
-query.setParameter("employee_id", 10);
-int result = query.executeUpdate();
-System.out.println("Rows affected: " + result);
-	
-	
-INSERT Clause
-----------------
-String hql = "INSERT INTO Employee(firstName, lastName, salary)"  + "SELECT firstName, lastName, salary FROM old_employee";
-Query query = session.createQuery(hql);
-int result = query.executeUpdate();
-System.out.println("Rows affected: " + result);
-
-DISTINCT
-----------
-The distinct keyword only counts the unique values in the row set.
-
-String hql = "SELECT count(distinct E.firstName) FROM Employee E";
-Query query = session.createQuery(hql);
-List results = query.list();
-
-----------------
-
-Hibernate one to one mapping with foreign key association
----------------------------------------------------------
-
-Below is EmployeeEntity.java
-
-@OneToOne
-@JoinColumn(name="ACCOUNT_ID")
-private AccountEntity account;
-
-
-In this kind of association, a foreign key column is created in owner entity. For example, if we make EmployeeEntity owner, then a extra column "ACCOUNT_ID" will be created in Employee table. This column will store the foreign key for Account table.
-
-
-If no @JoinColumn is declared on the owner side, the defaults apply. A join column(s) will be created in the owner table and its name will be the concatenation of the name of the relationship in the owner side, _ (underscore), and the name of the primary key column(s) in the owned side.
-	
-	
-Below is AccountEntity.java
-
-@OneToOne(mappedBy="account")
-private EmployeeEntity employee;
-	
 	
 ------------------------------------------------------------- AUTOCLOSEABLE--------------------------------------------------------------------------
 this particular interface helps to autoclose 
@@ -692,6 +412,323 @@ There are five types of advice in spring AOP.
 	
 @AfterReturning(pointcut = "execution(* com.luv2code.aopdemo.dao.AccountDAO.findAccounts(..))", returning = "result")
 	public void afterRunningFindAccountsService(JoinPoint theJoinPoint, List<Account> result) {
+
+	
+----------------------------------------------Concrete class-----------------------------------------------
+
+A class which is not abstract is referred as Concrete class. 
+	
+	
+-----------------------------------JAVA OOPS CONCEPT---------------------------------------------------
+
+1. Abstraction: Abstraction is a process of hiding the implementation details from the user. Оnly the functionality will be provided to the user. In Java, abstraction is achieved using abstract classes and interfaces. Interfaces provide 100% abstraction while abstract classes  provides partial abstraction
+
+2. Encapsulation : Make the instance variables private so that they cannot be accessed directly from outside the class. You can only set and get values of these variables through the methods of the class. Have getter and setter methods in the class to set and get the values of the fields. Encapsulation is also known as “data Hiding“.
+
+3. Polymorphism: Polymorphism is the capability of a method to do different things. Inheritance is a good example for this.
+	a. Method Overloading in Java – This is an example of compile time (or static polymorphism)
+	b. Method Overriding in Java – This is an example of runtime time (or dynamic polymorphism)
+	
+4. Inheritance:	Inheritance is a process of defining a new class based on an existing class by extending its common data members and methods.
+Inheritance allows us to reuse of code, it improves reusability in your java application.
+Note: The biggest advantage of Inheritance is that the code that is already present in base class need not be rewritten in the child class.
+
+5. Association: Association is a relationship between two separate classes.
+
+6. Aggregation: We need it To maintain code re-usability. Suppose 2 classes are created, and one class is using reference of another class in it, which means code is reused and they have a Has-a relationship between them.
+
+7. Composition: Composition is a restricted form of Aggregation in which two entities (or you can say classes) are highly dependent on each other. For e.g. Human and Heart. A human needs heart to live and a heart needs a Human body to survive. In other words when the classes (entities) are dependent on each other and their life span are same (if one dies then another one too) then its a composition. Heart class has no sense if Human class is not present.
+
+Platform independence means that you can run the same Java Program in any Operating System. For example, you can write java program in Windows and run it in Mac OS.
+
+java.lang.Object is the root class for all the java classes and we don’t need to extend it.
+
+Java is not said to be pure object-oriented because it supports primitive types such as int, byte, short, long etc
+suppose i want to convert a string into int, we cannot do it using primitive int but using Object Integer (wrapper class) as in Integer.parse("90")
+
+main() method is the entry point of any standalone java application. The syntax of main method is public static void main(String args[]).
+
+Java main method is public and static so that Java runtime can access it without initializing the class. 
+
+------------------------------------------------ Access Modifier ---------------------------------
+
+In java we have four access modifiers:
+----------------
+
+
+1. default: If class member doesn’t have any access modifier specified, then it’s treated with default access. The access rules are similar as classes and the class member with default access will be accessible to the classes in the same package only. This access is more restricted than public and protected but less restricted than private.
+
+2. private: If class member is “private” then it will be accessible only inside the same class. This is the most restricted access.
+
+3. protected: If class member is “protected” then it will be accessible only to the classes in the same package and to the subclasses. This modifier is less restricted from private but more restricted from public access. Usually we use this keyword to make sure the class variables are accessible only to the subclasses. So suppose if subclass is in different package, even then it can access parent class.
+
+4. public: The member variable or method is accessed globally. 
+
+-------------------------------------------------FINALIZE---------------------------------------------------------
+
+finalize() is a special method in Object class that we can override in our classes. This method gets called by the garbage collector when the object is getting garbage collected. This method is usually overridden to release system resources when the object is garbage collected.
+
+------------------------------------------------INNER Class-----------------------------------------------------
+
+public void print() {
+        //local inner class inside the method
+        class Logger {
+            String name;
+        }
+        //instantiate local inner class in the method to use
+        Logger logger = new Logger();
+		
+	
+-------------------------------------------------INNER STATIC CLASS--------------------------------------------------------------
+
+
+
+package com.journaldev.nested;
+
+import java.io.File;
+import java.io.FilenameFilter;
+
+public class OuterClass {
+    
+    private static String name = "OuterClass";
+    private int i;
+    protected int j;
+    int k;
+    public int l;
+
+    //OuterClass constructor
+    public OuterClass(int i, int j, int k, int l) {
+        this.i = i;
+        this.j = j;
+        this.k = k;
+        this.l = l;
+    }
+
+    public int getI() {
+        return this.i;
+    }
+
+    //static nested class, can access OuterClass static variables/methods
+    static class StaticNestedClass {
+        private int a;
+        protected int b;
+        int c;
+        public int d;
+
+        public int getA() {
+            return this.a;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    //inner class, non static and can access all the variables/methods of outer class
+    class InnerClass {
+        private int w;
+        protected int x;
+        int y;
+        public int z;
+
+        public int getW() {
+            return this.w;
+        }
+
+        public void setValues() {
+            this.w = i;
+            this.x = j;
+            this.y = k;
+            this.z = l;
+        }
+
+        @Override
+        public String toString() {
+            return "w=" + w + ":x=" + x + ":y=" + y + ":z=" + z;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+
+    //local inner class
+    public void print(String initial) {
+        //local inner class inside the method
+        class Logger {
+            String name;
+
+            public Logger(String name) {
+                this.name = name;
+            }
+
+            public void log(String str) {
+                System.out.println(this.name + ": " + str);
+            }
+        }
+
+        Logger logger = new Logger(initial);
+        logger.log(name);
+        logger.log("" + this.i);
+        logger.log("" + this.j);
+        logger.log("" + this.k);
+        logger.log("" + this.l);
+    }
+
+    //anonymous inner class
+    public String[] getFilesInDir(String dir, final String ext) {
+        File file = new File(dir);
+        //anonymous inner class implementing FilenameFilter interface
+        String[] filesList = file.list(new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(ext);
+            }
+
+        });
+        return filesList;
+    }
+}
+
+
+local inner class:   If a class is defined in a method body, it’s known as local inner class. Since local inner class is not associated with Object, we can’t use private, public or protected access modifiers with it. The only allowed modifiers are abstract or final
+	
+java inner class:    Any non-static nested class is known as inner class in java. Java inner class is associated with the object of the class and they can access all the variables and methods of the outer class.
+
+anonymous inner class:    A local inner class without name is known as anonymous inner class. An anonymous class is defined and instantiated in a single statement.
+	
+	
+------------------------------------------------------------STATIC IMPORT---------------------------------------------------------------
+
+What is static import?
+If we have to use any static variable or method from other class, usually we import the class and then use the method/variable with class name.
+	
+-----------------------------------------------------------try-with-resources------------------------------------------------------------
+
+One of the Java 7 features is the try-with-resources statement for automatic resource management. Before Java 7, there was no auto resource management and we should explicitly close the resource. Usually, it was done in the finally block of a try-catch statement. This approach used to cause memory leaks when we forgot to close the resource. try-with-resources implements autocloseable, you can find it in inputstream also	.
+
+-------------------------------------------------------------multi-catch block ---------------------------------------------------------
+
+before java 7 :
+
+catch (IOException ex) {
+     logger.error(ex);
+     throw new MyException(ex.getMessage());
+catch (SQLException ex) {
+     logger.error(ex);
+     throw new MyException(ex.getMessage());
+}
+
+-----
+
+after java 7 :
+
+
+catch(IOException | SQLException ex){
+     logger.error(ex);
+     throw new MyException(ex.getMessage());
+}
+
+------------------------------------------------------------ABSTRACT CLASSES---------------------------------------------------
+
+Abstract class in Java is similar to interface except that it can contain default method implementation. An abstract class can have an abstract method without body and it can have methods with implementation also. We can run abstract class in java like any other class if it has main() method.
+	
+-------------------------------------------Can an interface implement or extend another interface?----------------------------------
+
+Interfaces don’t implement another interface, they extend it. Since interfaces can’t have method implementations, there is no issue of diamond problem (where compiler can’t decide which superclass method to use). That’s why we have multiple inheritance in interfaces i.e an interface can extend multiple interfaces.
+
+From Java 8 onwards, interfaces can have default method implementations, then it is not mandatory to provide implementation for default methods of interface to the class which is implementing this interface.
+Default method in interface is defined method.	
+But if we created another interface that is using another default method with same name, then comes a class which implements both of the interfaces then we have to define the default method in that class otherwise compiler would throw an error as diamond problem can come to picture.
+
+public interface Interface1 {
+
+	void method1(String str);
+	
+	default void log(String str){
+		System.out.println("I1 logging::"+str);
+	}
+}
+
+public interface Interface2 {
+
+	void method2();
+	
+	default void log(String str){
+		System.out.println("I2 logging::"+str);
+	}
+
+}
+
+public class MyClass implements Interface1, Interface2 {
+
+	@Override
+	public void method2() {
+	}
+
+	@Override
+	public void method1(String str) {
+	}
+
+	@Override
+	public void log(String str){
+		System.out.println("MyClass logging::"+str);
+		Interface1.print("abc");
+	}
+}
+
+
+-----------------------------------------------------MARKER INTERFACE-----------------------------------------------------------
+	
+A marker interface is an empty interface without any method but used to force some functionality in implementing classes by Java. Some of the well known marker interfaces are Serializable and Cloneable.
+
+
+----------------------------------------------------ENUM--------------------------------------------------------------------
+
+Enum was introduced in Java 1.5 as a new type whose fields consists of fixed set of constants. Enum constructors are always private. We can declare abstract methods in java enum, then all the enum fields must implement the abstract method.
+
+enum is the keyword to create an enum type and similar to the class. Enum constants are implicitly static and final.
+
+public class ThreadStatesConstant {
+	public static final int START = 1;
+	public static final int WAITING = 2;
+	public static final int RUNNING = 3;
+	public static final int DEAD = 4;
+}
+
+public enum ThreadStates {
+	START,
+	RUNNING,
+	WAITING,
+	DEAD;
+}
+	
+-------------------------------------------------------Java Reflection API----------------------------------------------------
+
+Java Reflection API provides the ability to inspect and modify the runtime behavior of java application. We can inspect a java class, interface, enum and get their methods and field details.
+
+--------------------------------------------------------Garbage Collection-------------------------------------------------------
+
+Garbage Collection is the process of looking at heap memory, identifying which objects are in use and which are not, and deleting the unused objects. In Java, process of deallocating memory is handled automatically by the garbage collector.	
+	
+-----------------------------------------------How to run a JAR file through command prompt-----------------------------------
+
+We can run a jar file using java command but it requires Main-Class entry in jar manifest file. Main-Class is the entry point of the jar and used by java command to execute the class
+
+----------------------------------------------------System class--------------------------------------------------------------
+
+System class is final so that we can’t subclass and override its behavior through inheritance. System class doesn’t provide any public constructors, so we can’t instantiate this class and that’s why all of its methods are static.
+	
+-----------------------------------------------------Java is Pass by Value -----------------------------------------------------
+
+Java is always Pass by Value and not pass by reference
+
+----------------------------------------------------------Heap and Stack Memory----------------------------------------------------------
+	
+Heap memory is used by all the parts of the application whereas stack memory is used only by one thread of execution.
+Whenever an object is created, it’s always stored in the Heap space and stack memory contains the reference to it. Stack memory only contains local primitive variables and reference variables to objects in heap space.
+Memory management in the stack is done in LIFO manner whereas it’s more complex in Heap memory because it’s used globally.
 	
 	
 	
@@ -704,10 +741,7 @@ There are five types of advice in spring AOP.
 	
 	
 	
-	
-	
-	
-	
+
 	
 	
 	

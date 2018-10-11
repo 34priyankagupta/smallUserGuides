@@ -1,0 +1,245 @@
+
+
+-----------------------------------------------------------------HIBERNATE-------------------------------------------------------------------------
+
+Hibernate provides a powerful query language (HQL) that is similar to SQL. However, HQL is fully object-oriented and understands concepts like inheritance, polymorphism and association.
+
+----------------------------------------------------------------NAMED QUERY------------------------------------------------------------------
+
+Hibernate Named Query is global, means once defined it can be used throughout the application.
+
+JDBC API throws SQLException that is a checked exception, so we need to write a lot of try-catch block code. Most of the times it’s redundant in every JDBC call and used for transaction management. Hibernate wraps JDBC exceptions and throw JDBCException or HibernateException un-checked exception, so we don’t need to write code to handle it. Hibernate built-in transaction management removes the usage of try-catch blocks.
+
+
+some important interfaces of Hibernate framework????????????????????????????
+
+1. SessionFactory (org.hibernate.SessionFactory): SessionFactory is an immutable thread-safe cache of compiled mappings for a single database. We need to initialize SessionFactory once and then we can cache and reuse it. SessionFactory instance is used to get the Session objects for database operations.
+
+2. Session (org.hibernate.Session): Session is a single-threaded, short-lived object representing a conversation between the application and the persistent store. It wraps JDBC java.sql.Connection and works as a factory for org.hibernate.Transaction. We should open session only when it’s required and close it as soon as we are done using it. Session object is the interface between java application code and hibernate framework and provide methods for CRUD operations.
+
+3. Transaction (org.hibernate.Transaction): Transaction is a single-threaded, short-lived object used by the application to specify atomic units of work. 
+
+Hibernate Configuration XML
+hibernate.cfg.xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+  <!DOCTYPE hibernate-configuration SYSTEM "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.password">pankaj123</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost/TestDB</property>
+		<property name="hibernate.connection.username">pankaj</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+
+		<property name="hibernate.current_session_context_class">thread</property>
+		<property name="hibernate.show_sql">true</property>
+
+		<mapping class="com.journaldev.hibernate.model.Employee" />
+		<mapping class="com.journaldev.hibernate.model.Address" />
+		<mapping resource="named-queries.hbm.xml" />
+	</session-factory>
+</hibernate-configuration>
+
+
+Hibernate Named Query XML
+We have a hibernate mapping file, that contains only HQL named queries and Native SQL named queries.
+-------------------------------
+named-queries.hbm.xml
+
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+	
+<hibernate-mapping>
+	<query name="HQL_GET_ALL_EMPLOYEE">from Employee</query>
+
+	<query name="HQL_GET_EMPLOYEE_BY_ID">
+		<![CDATA[from Employee where emp_id = :id]]>
+	</query>
+
+	<query name="HQL_GET_EMPLOYEE_BY_SALARY">
+		<![CDATA[from Employee where emp_salary > :salary]]>
+	</query>
+	
+	<sql-query name="SQL_GET_ALL_EMPLOYEE">
+		<![CDATA[select emp_id, emp_name, emp_salary from Employee]]>
+	</sql-query>
+	
+	<sql-query name="SQL_GET_ALL_EMP_ADDRESS">
+		<![CDATA[select {e.*}, {a.*} from Employee e join Address a ON e.emp_id=a.emp_id]]>
+		<return alias="e" class="com.journaldev.hibernate.model.Employee" />
+		<return-join alias="a" property="e.address"></return-join>
+	</sql-query>
+	
+	<return alias="e" class="com.journaldev.hibernate.model.Employee" />
+		<return-join alias="a" property="e.address"></return-join>
+	</sql-query>
+</hibernate-mapping>
+
+-------------------------
+	public static void main(String[] args) {
+
+		// Prep work
+		SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+		Session session = sessionFactory.getCurrentSession();
+		Transaction tx = session.beginTransaction();
+
+		//HQL Named Query Example
+		Query query = session.getNamedQuery("HQL_GET_ALL_EMPLOYEE");
+		List<Employee> empList = query.list();
+		for (Employee emp : empList) {
+			System.out.println("List of Employees::" + emp.getId() + ","
+					+ emp.getAddress().getCity());
+		}
+		tx.commit();
+
+		// closing hibernate resources
+		sessionFactory.close();
+		
+		}
+------------------------
+
+@Entity
+@Table(name = "ADDRESS")
+@NamedQueries({ @NamedQuery(name = "@HQL_GET_ALL_ADDRESS", 
+			query = "from Address") })
+@NamedNativeQueries({ @NamedNativeQuery(name = "@SQL_GET_ALL_ADDRESS", 
+			query = "select emp_id, address_line1, city, zipcode from Address") })
+public class Address {............}
+
+
+
+various objects - transient, persistent, detached, remove---
+-----------------------------------------------------------
+
+1.	Newly created POJO object will be in the transient state. Transient object doesn’t represent any row of the database i.e. not associated with any session
+	object. It’s plain simple java object.
+	
+2.	Persistent object represent one row of the database and always associated with some unique hibernate session. Changes to persistent objects are tracked by
+	hibernate and are saved into database when commit call happen.
+	
+3.	Detached objects are those who were once persistent in past, and now they are no longer persistent. To persist changes done in detached objects, you must
+	reattach them to hibernate session.
+	
+4.	Removed objects are persistent objects that have been passed to the session’s remove() method and soon will be deleted as soon as changes held in the
+	session will be committed to database.
+
+
+Caching in hibernate
+---------------------
+	Caching functionality is designed to reduce the amount of necessary database access.
+	Hibernate provides 3 types of caching. 
+	1. Session Cache : The session cache caches objects within the current session. It is enabled by default in Hibernate. When we query an entity first time, it is retrieved from database and stored in first level cache associated with hibernate session
+	2. Second Level Cache : 
+	
+
+	
+FROM Clause
+------------
+String hql = "FROM Employee";
+Query query = session.createQuery(hql);
+List results = query.list();
+	
+
+AS Clause
+------------
+String hql = "FROM Employee AS E";
+Query query = session.createQuery(hql);
+List results = query.list();
+	
+	
+SELECT Clause
+--------------
+String hql = "SELECT E.firstName FROM Employee E";
+Query query = session.createQuery(hql);
+List results = query.list();	
+	
+	
+WHERE Clause
+---------------
+String hql = "FROM Employee E WHERE E.id = 10";
+Query query = session.createQuery(hql);
+List results = query.list();
+	
+ORDER BY Clause
+----------------
+String hql = "FROM Employee E WHERE E.id > 10 ORDER BY E.salary DESC";
+Query query = session.createQuery(hql);
+List results = query.list();
+	
+
+GROUP BY Clause
+---------------
+String hql = "SELECT SUM(E.salary), E.firtName FROM Employee E " +
+             "GROUP BY E.firstName";
+Query query = session.createQuery(hql);
+List results = query.list();
+	
+	
+Using Named Parameters
+----------------------
+String hql = "FROM Employee E WHERE E.id = :employee_id";
+Query query = session.createQuery(hql);
+query.setParameter("employee_id",10);
+List results = query.list();
+	
+	
+UPDATE Clause
+--------------
+String hql = "UPDATE Employee set salary = :salary "  + "WHERE id = :employee_id";
+Query query = session.createQuery(hql);
+query.setParameter("salary", 1000);
+query.setParameter("employee_id", 10);
+int result = query.executeUpdate();
+System.out.println("Rows affected: " + result);
+	
+	
+	
+DELETE Clause
+--------------
+String hql = "DELETE FROM Employee "  + "WHERE id = :employee_id";
+Query query = session.createQuery(hql);
+query.setParameter("employee_id", 10);
+int result = query.executeUpdate();
+System.out.println("Rows affected: " + result);
+	
+	
+INSERT Clause
+----------------
+String hql = "INSERT INTO Employee(firstName, lastName, salary)"  + "SELECT firstName, lastName, salary FROM old_employee";
+Query query = session.createQuery(hql);
+int result = query.executeUpdate();
+System.out.println("Rows affected: " + result);
+
+DISTINCT
+----------
+The distinct keyword only counts the unique values in the row set.
+
+String hql = "SELECT count(distinct E.firstName) FROM Employee E";
+Query query = session.createQuery(hql);
+List results = query.list();
+
+----------------
+
+Hibernate one to one mapping with foreign key association
+---------------------------------------------------------
+
+Below is EmployeeEntity.java
+
+@OneToOne
+@JoinColumn(name="ACCOUNT_ID")
+private AccountEntity account;
+
+
+In this kind of association, a foreign key column is created in owner entity. For example, if we make EmployeeEntity owner, then a extra column "ACCOUNT_ID" will be created in Employee table. This column will store the foreign key for Account table.
+
+
+If no @JoinColumn is declared on the owner side, the defaults apply. A join column(s) will be created in the owner table and its name will be the concatenation of the name of the relationship in the owner side, _ (underscore), and the name of the primary key column(s) in the owned side.
+	
+	
+Below is AccountEntity.java
+
+@OneToOne(mappedBy="account")
+private EmployeeEntity employee;
+	
